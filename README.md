@@ -1,64 +1,44 @@
-Prompt for ChatGPT Codex:
+**Prompt for GitHub Codex/ChatGPT:**```
+I need to integrate a large SST (Structural Systematic Transformation) technique database from a JSON file into my DRBanger Legal Research System code.
 
-```
-Convert the 4 SST techniques files in the repository into a single a JSON structure. For each domain section, extract all the numbered techniques and format them according to this template:
+**TASK:** Replace the fallback SST database in my code with the complete database from `codex_sst.json`
 
-TEMPLATE STRUCTURE:
+**FILE LOCATION:** `codex_sst.json` (in main repository directory)
+
+**JSON STRUCTURE:** The file contains an array of domain objects, each with techniques:
 ```json
 [
   {
     "domain": "Domain Name",
     "techniques": [
       {
-        "name": "Technique Name",
-        "method": "Brief description of the transformation method or application"
+        "name": "Technique Name", 
+        "method": "Description of the technique method"
       }
     ]
   }
 ]
 ```
 
-EXTRACTION RULES:
-1. Create one domain object for each major section (e.g., "Functional Programming", "Geo and Spatial", "Legal", "Mathematical", "Military")
-2. For each numbered technique, extract:
-   - name: The technique title (remove emoji and number)
-   - method: The main explanation/description (1-2 sentences, combine if needed)
-3. Remove citations, footnotes, and example details - keep only the core method description
-4. If a technique has multiple paragraphs, combine the key concepts into a concise method description
-5. For simulated techniques, include "Simulated" in the name
-6. Skip any introductory text, conclusions, or reference sections
-
-INPUT TEXT:
-[Paste your SST techniques document here]
-
-OUTPUT: Valid JSON array following the template structure above.
+**INTEGRATION POINT:** In the JavaScript code, find this line (around line 575):
+```javascript
+sstDatabase = fallbackSST; // <-- Replace 'fallbackSST' with your JSON array
 ```
 
-## Example of Expected Output Format:
+**WHAT TO DO:**
+1. Read the contents of `codex_sst.json`
+2. Replace the line above with: `sstDatabase = [PASTE_ENTIRE_JSON_CONTENT_HERE];`
+3. Ensure proper JavaScript syntax (the JSON should become a valid JavaScript array)
+4. Do NOT modify any other part of the code - only replace that single assignment
 
-```json
-[
-  {
-    "domain": "Functional Programming",
-    "techniques": [
-      {
-        "name": "Beta-reduction",
-        "method": "Beta-reduction applies a function to its argument by substituting the argument into the function's body, simplifying expressions through lambda calculus operations."
-      },
-      {
-        "name": "Eta-conversion", 
-        "method": "Eta-conversion simplifies a function by removing unnecessary lambda abstractions when the function applies another function to its argument unchanged."
-      }
-    ]
-  },
-  {
-    "domain": "Geo and Spatial",
-    "techniques": [
-      {
-        "name": "Map Projection Transformation",
-        "method": "Map projection converts spherical Earth coordinates into flat, two-dimensional representations using mathematical formulas that preserve specific properties like area, distance, or angles."
-      }
-    ]
-  }
-]
+**EXPECTED RESULT:** All ~250 SST techniques from the JSON file will be integrated and immediately available in:
+- Cascading dropdowns (Domain → Technique selection)
+- Database browser modal
+- Random sampling function  
+- Dynamic SST generation system
+
+**IMPORTANT:** Keep the exact JSON structure intact - just convert it from a separate file into an inline JavaScript array assignment.
 ```
+
+---
+l
