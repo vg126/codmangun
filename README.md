@@ -1,7 +1,7 @@
 Prompt for ChatGPT Codex:
 
 ```
-Convert the following SST techniques text into a JSON structure. For each domain section, extract all the numbered techniques and format them according to this template:
+Convert the 4 SST techniques files in the repository into a single a JSON structure. For each domain section, extract all the numbered techniques and format them according to this template:
 
 TEMPLATE STRUCTURE:
 ```json
