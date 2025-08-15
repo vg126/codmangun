@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DRBanger Enhanced Legal Research System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@9.1.6/marked.min.js"></script>
+    <script>
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+
+    </script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-[#5D5CDE] mb-2">🎯 DRBanger Enhanced Legal Research System</h1>
+            <p class="text-gray-600 dark:text-gray-400">Dynamic SST Generation → SST Application → ICC Precedent Evaluation → International Law Validation → ICC Insight Extraction → Novelty Verification</p>
+        </div>
+
+        <!-- Input Section -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">📝 Input Configuration</h2>
+            
+            <!-- SST Database Upload -->
+            <div class="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-4 mb-4 border border-amber-200 dark:border-amber-800">
+                <h3 class="font-semibold mb-2 text-amber-800 dark:text-amber-200">📚 SST Database</h3>
+                <div class="flex items-center space-x-4">
+                    <input type="file" id="sstDatabaseFile" accept=".json" class="text-sm">
+                    <span id="sstDatabaseStatus" class="text-sm text-gray-600 dark:text-gray-400">No database loaded</span>
+                </div>
+                <p class="text-xs text-amber-700 dark:text-amber-300 mt-2">Upload a JSON file containing SST techniques organized by domain</p>
+            </div>
+
+            <!-- Enhancement Modules Toggle -->
+            <div class="bg-cyan-50 dark:bg-cyan-900/20 rounded-lg p-4 mb-4 border border-cyan-200 dark:border-cyan-800">
+                <h3 class="font-semibold mb-3 text-cyan-800 dark:text-cyan-200">🔧 Enhancement Modules</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <label class="flex items-center cursor-pointer">
+                        <input type="checkbox" id="enableSSTGeneration" class="mr-3">
+                        <span class="text-sm">🎯 Dynamic SST Generation</span>
+                    </label>
+                    <label class="flex items-center cursor-pointer">
+                        <input type="checkbox" id="enableNoveltyAnalysis" class="mr-3" checked>
+                        <span class="text-sm">🔍 Novelty Verification</span>
+                    </label>
+                    <label class="flex items-center cursor-pointer">
+                        <input type="checkbox" id="enableExportSystem" class="mr-3" checked>
+                        <span class="text-sm">📊 Results Export</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Legal Text Input -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-2">Legal Text (e.g., ICC Article 17)</label>
+                <textarea 
+                    id="legalText" 
+                    class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base resize-vertical"
+                    rows="4"
+                    placeholder="Enter the legal text you want to analyze..."
+                ></textarea>
+            </div>
+
+            <!-- SST Generation Module -->
+            <div id="sstGenerationModule" class="mb-4 p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg border border-indigo-200 dark:border-indigo-800 hidden">
+                <h3 class="font-semibold mb-2 text-indigo-800 dark:text-indigo-200">🎯 Dynamic SST Generation</h3>
+                <button 
+                    id="generateSSTBtn"
+                    class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    🔮 Generate Optimal SST
+                </button>
+                <div id="sstGenerationStatus" class="text-sm text-gray-600 dark:text-gray-400 mt-2"></div>
+                <div id="generatedSSTOutput" class="mt-3 p-3 bg-white dark:bg-gray-700 rounded border hidden">
+                    <strong>Generated SST:</strong> 
+                    <div id="generatedSSTContent" class="mt-2"></div>
+                </div>
+            </div>
+
+            <!-- SST Technique Input -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-2">SST Technique</label>
+                <textarea 
+                    id="sstCapsule" 
+                    class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base resize-vertical"
+                    rows="3"
+                    placeholder="Enter an SST technique or use options below..."
+                ></textarea>
+                
+                <!-- Manual SST Selection Dropdowns -->
+                <div class="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                    <h3 class="font-semibold mb-3 text-blue-800 dark:text-blue-200">🎯 Manual SST Selection</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Domain</label>
+                            <select id="sstDomainSelect" class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-base">
+                                <option value="">Select a domain...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Technique</label>
+                            <select id="sstTechniqueSelect" class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-base" disabled>
+                                <option value="">Select a technique...</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button 
+                            id="applySSTBtn"
+                            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled
+                        >
+                            ✨ Apply Selected SST
+                        </button>
+                        <button 
+                            id="sampleSSTBtn"
+                            class="px-4 py-2 bg-gray-200 dark:bg-gray-600 text-sm rounded hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors"
+                        >
+                            🎲 Sample Random SST
+                        </button>
+                        <button 
+                            id="openSSTDatabase"
+                            class="px-4 py-2 bg-purple-600 text-white text-sm rounded hover:bg-purple-700 transition-colors"
+                        >
+                            📚 Browse Database
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bot Selectors -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Bot 1: SST Application</label>
+                    <select id="bot1" class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-base">
+                        <option value="Claude-Sonnet-4" selected>Claude-Sonnet-4 (Default)</option>
+                        <option value="GPT-4o">GPT-4o</option>
+                        <option value="Claude-Sonnet-3.5">Claude-Sonnet-3.5</option>
+                        <option value="Command-R-Plus">Command-R-Plus</option>
+                        <option value="Mixtral8x22b-Inst-FW">Mixtral8x22b-Inst-FW</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Bot 2: Legal Evaluation</label>
+                    <select id="bot2" class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-base">
+                        <option value="Gemini-2.5-Flash" selected>Gemini-2.5-Flash (Default)</option>
+                        <option value="Claude-Haiku-3.5-Search">Claude-Haiku-3.5-Search</option>
+                        <option value="Claude-Sonnet-4-Search">Claude-Sonnet-4-Search</option>
+                        <option value="Gemini-2.0-Flash">Gemini-2.0-Flash</option>
+                        <option value="GPT-4o-Search">GPT-4o-Search</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Bot 3: International Law SST Applicator</label>
+                    <select id="bot3" class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-base">
+                        <option value="DeepSeek-V3-FW" selected>DeepSeek-V3-FW (Default)</option>
+                        <option value="Claude-Opus-4">Claude-Opus-4</option>
+                        <option value="Claude-Sonnet-4">Claude-Sonnet-4</option>
+                        <option value="Claude-Sonnet-4-Search">Claude-Sonnet-4-Search</option>
+                        <option value="Grok-4">Grok-4</option>
+                        <option value="o3-pro">o3-pro</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Bot 4: ICC Insight Extractor</label>
+                    <select id="bot4" class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-base">
+                        <option value="Claude-3.5-Haiku" selected>Claude-3.5-Haiku (Default)</option>
+                        <option value="Claude-Opus-4">Claude-Opus-4</option>
+                        <option value="Claude-Sonnet-4">Claude-Sonnet-4</option>
+                        <option value="Grok-4">Grok-4</option>
+                        <option value="Gemini-2.5-Pro">Gemini-2.5-Pro</option>
+                        <option value="GPT-4o">GPT-4o</option>
+                        <option value="Llama-3.1-405B-T">Llama-3.1-405B-T</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Pre-Prompt Instructions -->
+            <div id="prePromptSection" class="mb-4 p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg border border-indigo-200 dark:border-indigo-800">
+                <h3 class="text-sm font-semibold mb-3 text-indigo-800 dark:text-indigo-200">🎯 Custom Pre-Prompt Instructions (Optional)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium mb-1 text-indigo-700 dark:text-indigo-300">Bot 1 Pre-Prompt</label>
+                        <textarea 
+                            id="prePrompt1" 
+                            class="w-full p-2 border border-indigo-300 dark:border-indigo-600 rounded bg-white dark:bg-gray-700 text-sm resize-vertical"
+                            rows="2"
+                            placeholder="Custom instructions for SST Application Bot..."
+                        ></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium mb-1 text-indigo-700 dark:text-indigo-300">Bot 2 Pre-Prompt</label>
+                        <textarea 
+                            id="prePrompt2" 
+                            class="w-full p-2 border border-indigo-300 dark:border-indigo-600 rounded bg-white dark:bg-gray-700 text-sm resize-vertical"
+                            rows="2"
+                            placeholder="Custom instructions for Legal Evaluation Bot..."
+                        ></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium mb-1 text-indigo-700 dark:text-indigo-300">Bot 3 Pre-Prompt</label>
+                        <textarea 
+                            id="prePrompt3" 
+                            class="w-full p-2 border border-indigo-300 dark:border-indigo-600 rounded bg-white dark:bg-gray-700 text-sm resize-vertical"
+                            rows="2"
+                            placeholder="Custom instructions for International Law SST Applicator Bot..."
+                        ></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium mb-1 text-indigo-700 dark:text-indigo-300">Bot 4 Pre-Prompt</label>
+                        <textarea 
+                            id="prePrompt4" 
+                            class="w-full p-2 border border-indigo-300 dark:border-indigo-600 rounded bg-white dark:bg-gray-700 text-sm resize-vertical"
+                            rows="2"
+                            placeholder="Custom instructions for ICC Insight Extractor Bot..."
+                        ></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workflow Status -->
+            <div class="mb-4 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                <h3 class="font-semibold mb-2 text-green-800 dark:text-green-200">🔄 Workflow Progress</h3>
+                <div class="flex flex-wrap gap-2">
+                    <span id="step1Status" class="px-3 py-1 rounded-full text-xs bg-gray-200 dark:bg-gray-700">1. SST Generation</span>
+                    <span id="step2Status" class="px-3 py-1 rounded-full text-xs bg-gray-200 dark:bg-gray-700">2. SST Application</span>
+                    <span id="step3Status" class="px-3 py-1 rounded-full text-xs bg-gray-200 dark:bg-gray-700">3. Legal Critique</span>
+                    <span id="step4Status" class="px-3 py-1 rounded-full text-xs bg-gray-200 dark:bg-gray-700">4. International Validation</span>
+                    <span id="step5Status" class="px-3 py-1 rounded-full text-xs bg-gray-200 dark:bg-gray-700">5. ICC Insights</span>
+                    <span id="step6Status" class="px-3 py-1 rounded-full text-xs bg-gray-200 dark:bg-gray-700">6. Novelty Analysis</span>
+                </div>
+            </div>
+
+            <!-- Run Button -->
+            <button 
+                id="runAnalysis"
+                class="w-full px-6 py-3 bg-[#5D5CDE] text-white rounded-lg hover:bg-[#4a49c7] transition-colors font-medium text-base disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+                🚀 Run Enhanced DRBanger Analysis
+            </button>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="space-y-6 hidden">
+            <!-- SST Generation Results -->
+            <div id="sstGenerationResults" class="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-6 hidden">
+                <h3 class="text-lg font-semibold flex items-center mb-3">
+                    <span class="w-8 h-8 bg-indigo-500 text-white rounded-full flex items-center justify-center text-sm mr-3">0</span>
+                    🎯 Dynamic SST Generation
+                </h3>
+                <div id="sstGenStatus" class="text-sm text-gray-600 dark:text-gray-400 mb-2"></div>
+                <div id="sstGenOutput" class="prose dark:prose-invert max-w-none bg-white dark:bg-gray-800 p-4 rounded border min-h-[50px]"></div>
+            </div>
+
+            <!-- Bot 1 Results -->
+            <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6">
+                <h3 class="text-lg font-semibold flex items-center mb-3">
+                    <span class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm mr-3">1</span>
+                    🔍 SST Mechanical Application Bot
+                </h3>
+                <div id="bot1Status" class="text-sm text-gray-600 dark:text-gray-400 mb-2"></div>
+                <div id="bot1Output" class="prose dark:prose-invert max-w-none bg-white dark:bg-gray-800 p-4 rounded border min-h-[50px] max-h-[600px] overflow-y-auto"></div>
+            </div>
+
+            <!-- Bot 2 Results -->
+            <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-6">
+                <h3 class="text-lg font-semibold flex items-center mb-3">
+                    <span class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm mr-3">2</span>
+                    ⚡ ICC Precedent Evaluator Bot
+                </h3>
+                <div id="bot2Status" class="text-sm text-gray-600 dark:text-gray-400 mb-2"></div>
+                <div id="bot2Output" class="prose dark:prose-invert max-w-none bg-white dark:bg-gray-800 p-4 rounded border min-h-[50px] max-h-[600px] overflow-y-auto"></div>
+            </div>
+
+            <!-- Bot 3 Results -->
+            <div class="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-6">
+                <h3 class="text-lg font-semibold flex items-center mb-3">
+                    <span class="w-8 h-8 bg-purple-500 text-white rounded-full flex items-center justify-center text-sm mr-3">3</span>
+                    🧪 International Law SST Applicator Bot
+                </h3>
+                <div id="bot3Status" class="text-sm text-gray-600 dark:text-gray-400 mb-2"></div>
+                <div id="bot3Output" class="prose dark:prose-invert max-w-none bg-white dark:bg-gray-800 p-4 rounded border min-h-[50px] max-h-[600px] overflow-y-auto"></div>
+            </div>
+
+            <!-- Bot 4 Results -->
+            <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-6">
+                <h3 class="text-lg font-semibold flex items-center mb-3">
+                    <span class="w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center text-sm mr-3">4</span>
+                    ⚡ ICC Insight Extractor Bot
+                </h3>
+                <div id="bot4Status" class="text-sm text-gray-600 dark:text-gray-400 mb-2"></div>
+                <div id="bot4Output" class="prose dark:prose-invert max-w-none bg-white dark:bg-gray-800 p-4 rounded border min-h-[50px] max-h-[600px] overflow-y-auto"></div>
+            </div>
+
+            <!-- Novelty Analysis Results -->
+            <div id="noveltyAnalysisResults" class="bg-teal-50 dark:bg-teal-900/20 rounded-lg p-6 hidden">
+                <h3 class="text-lg font-semibold flex items-center mb-3">
+                    <span class="w-8 h-8 bg-teal-500 text-white rounded-full flex items-center justify-center text-sm mr-3">5</span>
+                    🔍 Novelty Gap Analysis
+                </h3>
+                <div id="noveltyStatus" class="text-sm text-gray-600 dark:text-gray-400 mb-2"></div>
+                <div id="noveltyResults" class="mt-2">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+                        <div class="text-center p-3 bg-white dark:bg-gray-700 rounded">
+                            <div class="text-2xl font-bold" id="noveltyScore">--</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">Novelty Score</div>
+                        </div>
+                        <div class="text-center p-3 bg-white dark:bg-gray-700 rounded">
+                            <div class="text-sm font-semibold" id="noveltyStatusValue">Analyzing...</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">Status</div>
+                        </div>
+                        <div class="text-center p-3 bg-white dark:bg-gray-700 rounded">
+                            <div class="text-sm font-semibold" id="researchValue">--</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">Research Value</div>
+                        </div>
+                    </div>
+                    <div class="mt-3 p-3 bg-white dark:bg-gray-700 rounded">
+                        <strong>Gap Identified:</strong> <span id="identifiedGap">Analyzing...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export Section -->
+        <div id="exportSection" class="bg-slate-50 dark:bg-slate-800 rounded-lg p-6 mt-6 hidden">
+            <h2 class="text-xl font-semibold mb-4">📊 Results & Export</h2>
+            <div id="exportResults" class="mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-white dark:bg-gray-700 p-4 rounded-lg text-center">
+                        <div class="text-2xl font-bold text-blue-600" id="finalNoveltyScore">--</div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400">Final Novelty Score</div>
+                    </div>
+                    <div class="bg-white dark:bg-gray-700 p-4 rounded-lg text-center">
+                        <div class="text-lg font-bold" id="breakthroughStatus">⏳</div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400">Breakthrough Status</div>
+                    </div>
+                    <div class="bg-white dark:bg-gray-700 p-4 rounded-lg text-center">
+                        <div class="text-lg font-bold" id="keyFindingStatus">Not Extracted</div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400">Key Finding Status</div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <button id="exportMarkdown" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">📄 Export Markdown Report</button>
+                    <button id="exportJSON" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors">📋 Export JSON Data</button>
+                    <button id="exportCSV" class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors">📊 Export CSV Summary</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Display -->
+        <div id="errorSection" class="hidden bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mt-6">
+            <h3 class="text-red-800 dark:text-red-200 font-semibold mb-2">❌ Error</h3>
+            <div id="errorMessage" class="text-red-700 dark:text-red-300"></div>
+        </div>
+    </div>
+
+    <script>
+        // ===== CENTRAL STATE MANAGEMENT =====
+        window.DRBangerState = {};
+
+        // ===== SST DATABASE SYSTEM =====
+        let sstDatabase = null;
+
+        // Sample SST database structure for fallback
+        const fallbackSST = [
+            {
+                domain: "Chess Informatics",
+                techniques: [
+                    {
+                        name: "Zobrist Hashing Transformation",
+                        method: "Converts positions to unique 64-bit numbers by XORing random values associated with board elements"
+                    },
+                    {
+                        name: "Opening Theory Canonicalization",
+                        method: "Standardizes position evaluation through established theoretical frameworks"
+                    }
+                ]
+            },
+            {
+                domain: "Music Theory", 
+                techniques: [
+                    {
+                        name: "Klangfarbenmelodie",
+                        method: "Distributes melodic lines among different instruments, with each playing only a few notes, making timbre changes structural"
+                    },
+                    {
+                        name: "Rhythmic Displacement",
+                        method: "Shifts rhythmic patterns off their expected beats to create tension and forward motion"
+                    }
+                ]
+            },
+            {
+                domain: "Software Engineering",
+                techniques: [
+                    {
+                        name: "Factory Method Pattern",
+                        method: "Delegates object instantiation to subclasses, allowing the system to decide which class to instantiate at runtime"
+                    },
+                    {
+                        name: "Observer Pattern",
+                        method: "Defines a one-to-many dependency between objects so that when one object changes state, all dependents are notified"
+                    }
+                ]
+            },
+            {
+                domain: "Quantum Computing",
+                techniques: [
+                    {
+                        name: "Quantum Superposition Mixer", 
+                        method: "Layers tracks (all possible states of a qubit) playing simultaneously, mixing huge data sets into single lightweight wave"
+                    },
+                    {
+                        name: "Entanglement Correlation",
+                        method: "Creates instantaneous correlation between distant elements regardless of spatial separation"
+                    }
+                ]
+            },
+            {
+                domain: "Translation Studies",
+                techniques: [
+                    {
+                        name: "Modulation",
+                        method: "Alters the point of view or category of thought, shifting perspective from one conceptual framework to another"
+                    },
+                    {
+                        name: "Compensation Technique",
+                        method: "Makes up for a loss of meaning in one part of a text by adding or emphasizing meaning in another part"
+                    }
+                ]
+            }
+        ];
+
+        // ===== PASTE YOUR JSON DATABASE HERE =====
+        // Replace the fallbackSST assignment below with your 250-technique JSON array
+        // Simply paste your JSON array after the = sign, like:
+        // sstDatabase = [ { "domain": "...", "techniques": [...] }, ... ];
+        
+        sstDatabase = fallbackSST; // <-- Replace 'fallbackSST' with your JSON array
+
+        // SST Database file upload handler
+        document.getElementById('sstDatabaseFile').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file && file.type === 'application/json') {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        sstDatabase = data;
+                        document.getElementById('sstDatabaseStatus').textContent = `Loaded ${countTechniques(data)} techniques from ${data.length} domains`;
+                        document.getElementById('sstDatabaseStatus').className = 'text-sm text-green-600 dark:text-green-400';
+                    } catch (error) {
+                        showError('Invalid JSON file format');
+                        document.getElementById('sstDatabaseStatus').textContent = 'Failed to load database';
+                        document.getElementById('sstDatabaseStatus').className = 'text-sm text-red-600 dark:text-red-400';
+                    }
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        function countTechniques(database) {
+            return database.reduce((total, domain) => total + domain.techniques.length, 0);
+        }
+
+        // Smart SST sampling to avoid prompt overload
+        function getRelevantSSTs(legalText, count = 15) {
+            if (!sstDatabase || !Array.isArray(sstDatabase)) return [];
+            
+            const allTechniques = [];
+            sstDatabase.forEach(domain => {
+                domain.techniques.forEach(tech => {
+                    allTechniques.push({
+                        ...tech,
+                        domain: domain.domain
+                    });
+                });
+            });
+
+            // Simple keyword matching for relevance
+            const keywords = legalText.toLowerCase().split(' ').filter(word => word.length > 3);
+            const scoredTechniques = allTechniques.map(tech => {
+                let score = 0;
+                keywords.forEach(keyword => {
+                    if (tech.name.toLowerCase().includes(keyword) || tech.method.toLowerCase().includes(keyword)) {
+                        score += 2;
+                    }
+                });
+                // Add random factor to ensure variety
+                score += Math.random();
+                return { ...tech, score };
+            });
+
+            return scoredTechniques
+                .sort((a, b) => b.score - a.score)
+                .slice(0, count);
+        }
+
+        // Random SST sampling
+        function getRandomSST() {
+            if (!sstDatabase || !Array.isArray(sstDatabase)) return null;
+            
+            const allTechniques = [];
+            sstDatabase.forEach(domain => {
+                domain.techniques.forEach(tech => {
+                    allTechniques.push({
+                        ...tech,
+                        domain: domain.domain
+                    });
+                });
+            });
+
+            if (allTechniques.length === 0) return null;
+            
+            const randomTech = allTechniques[Math.floor(Math.random() * allTechniques.length)];
+            return `**SST TECHNIQUE**: ${randomTech.name} (${randomTech.domain})\n**APPLICATION METHOD**: ${randomTech.method}`;
+        }
+
+        // ===== BOT PROMPT TEMPLATES =====
+        const botPrompts = {
+            bot1: (legalText, sstTechnique, prePrompt) => {
+                const basePrompt = `ROLE: sst_mechanical_applicator
+TASK: Apply the provided SST technique mechanically to legal text
+LEGAL TEXT: ${legalText}
+
+SST TECHNIQUE: ${sstTechnique}
+
+INSTRUCTIONS:
+1. Apply the SST technique MECHANICALLY to the legal text structure
+2. Do NOT interpret legal meaning - treat text as raw material for transformation
+3. Transform the legal text THROUGH the SST lens as if it were data/code/music/etc
+4. Show exactly HOW the transformation changes the text's structure
+5. Include confidence score (0-100) for the mechanical application
+
+OUTPUT FORMAT: 
+[SST Applied: <technique name>]
+[Confidence: XX/100]
+
+<Mechanical transformation of the legal text through the SST lens>`;
+                return prePrompt ? `${prePrompt}\n\n${basePrompt}` : basePrompt;
+            },
+
+            bot2: (bot1Output, legalText, prePrompt) => {
+                const basePrompt = `ROLE: sst_skeptic_critic
+TASK: DEMOLISH the SST application as legally invalid and methodologically flawed
+BOT 1 OUTPUT: ${bot1Output}
+ORIGINAL ICC TEXT: ${legalText}
+
+CRITICAL MANDATE: You are the hostile critic. Attack the SST transformation relentlessly.
+
+ATTACK VECTORS:
+1. **Methodological Invalidity**: SST is imported from non-legal domains - why should chess/music/computing techniques apply to law?
+2. **Textual Violence**: The transformation distorts the plain meaning of legal text beyond recognition
+3. **Precedential Disconnect**: No ICC case has ever used this interpretive method - it's judicial activism
+4. **Due Process Violations**: The transformation undermines established legal safeguards and procedural requirements
+5. **Practical Impossibility**: Courts cannot operationalize these abstract transformations in real cases
+6. **Legal Certainty Destruction**: SST creates unpredictable interpretations that violate rule of law principles
+
+OUTPUT STRUCTURE:
+**METHODOLOGICAL REJECTION**: [Why this SST technique has no place in legal interpretation]
+**TEXTUAL DISTORTION**: [How the transformation violates established canons of interpretation]  
+**PRECEDENTIAL VOID**: [Why no serious court would accept this approach]
+**PRACTICAL IMPOSSIBILITY**: [Why this cannot work in actual ICC proceedings]
+**VERDICT**: [Definitive rejection with 2-3 devastating points]
+
+TONE: Hostile academic critic. Think law review takedown piece, not diplomatic evaluation.`;
+                return prePrompt ? `${prePrompt}\n\n${basePrompt}` : basePrompt;
+            },
+
+            bot3: (bot2Output, bot1Output, prePrompt) => {
+                const basePrompt = `ROLE: international_law_sst_applicator
+TASK: APPLY SST to international law to prove its validity as interpretive technique
+CONTEXT: Bot 2 gave narrow ICC precedent-based critique. Now apply SST to international law as proof of concept.
+
+BOT 2 EVALUATION: ${bot2Output}
+
+MANDATE: 
+- International law provides wider canvas than ICC's limited case law
+- APPLY (not simulate) the same SST to actual international law provisions
+- Show that SST is a legitimate interpretive technique through concrete application
+- Create dialectical tension: narrow precedent view vs SST's broad power
+
+DELIVERABLE 1: CONCRETE SST APPLICATION
+Choose specific international law provision (UN Charter, Geneva Conventions, VCLT, etc.)
+APPLY the SST transformation. Show the actual result, not theory.
+
+DELIVERABLE 2: VALIDITY DEMONSTRATION TABLE
+
+| Traditional Legal Reading | SST-Applied Reading | What This Proves About SST |
+|---|---|---|
+| [conventional interpretation] | [actual SST result] | [SST's interpretive power] |
+
+DELIVERABLE 3: DIALECTICAL RESPONSE
+2-3 sentences: How this international law application proves SST is valid despite Bot 2's precedent concerns`;
+                return prePrompt ? `${prePrompt}\n\n${basePrompt}` : basePrompt;
+            },
+
+            bot4: (bot2Output, bot3Output, legalText, sstTechnique, prePrompt) => {
+                const basePrompt = `ROLE: concrete_icc_extractor
+TASK: Extract SPECIFIC ICC legal angles from the SST transformation - zero abstractions
+INPUTS: 
+SST Applied: ${sstTechnique}
+Original ICC Text: ${legalText}
+Bot 3 Proof: ${bot3Output}
+
+MANDATE: Bot 3 proved SST works in international law. Now extract the specific ICC angle this creates.
+
+CONCRETE OUTPUT REQUIRED (Example format - follow this precision):
+
+**ICC FINDING**: [One specific legal angle, e.g., "Article 28 command responsibility allows instant liability determination through knowledge-failure entanglement"]
+
+**APPLICATION TO ICC PROVISION**: [Apply the SST to a specific ICC article. Show exact transformation]
+
+**SPECIFIC CASE IMPACT**: [Name specific ICC cases this affects - Bemba, Lubanga, Al Bashir, etc. - and exactly how]
+
+**PROSECUTOR TOOL**: [Exact procedural advantage this gives ICC prosecutors]
+
+**DEFENSE VULNERABILITY**: [Specific weakness this creates for defense teams]
+
+**IMMEDIATE APPLICATION**: [Which pending ICC case or future prosecution could use this right now]
+
+WRITE LIKE A PROSECUTOR'S INTERNAL MEMO - specific, actionable, immediate.`;
+                return prePrompt ? `${prePrompt}\n\n${basePrompt}` : basePrompt;
+            }
+        };
+
+        // ===== SST GENERATION MODULE =====
+        function generateSSTPrompt(legalText) {
+            const relevantSSTs = getRelevantSSTs(legalText, 15);
+            const sstExamples = relevantSSTs.map(sst => `- ${sst.name} (${sst.domain}): ${sst.method}`).join('\n');
+
+            return `ROLE: legal_text_analyzer_and_sst_creator
+TASK: Analyze the following legal text and generate an optimal SST (Structural/Systematic/Strategic Transformation) technique from the provided domain pool. The technique should be novel, insightful, and specifically tailored to unlock new interpretations of the text.
+
+LEGAL TEXT:
+"""
+${legalText}
+"""
+
+ANALYSIS FRAMEWORK:
+1. **Text Characteristics**: Analyze the text for its primary nature (e.g., Procedural, Definitional, Temporal, Relational, Jurisdictional)
+2. **Legal Function**: Determine the core function the text serves (e.g., Admissibility, Evidence, Jurisdiction, Remedy, Procedure)
+3. **Structural Complexity**: Assess the complexity (e.g., Simple Rule, Multi-Factor Test, Hierarchical Standard)
+
+AVAILABLE SST TECHNIQUES:
+${sstExamples}
+
+OUTPUT REQUIREMENT:
+Generate ONE custom SST technique optimized for this text. Your response MUST strictly follow this format:
+
+**SST TECHNIQUE**: [Name of the technique]
+**APPLICATION METHOD**: [Concise, specific transformation approach for this legal text. Explain how to apply the domain concept to the legal structure.]
+**CONFIDENCE SCORE**: [Score from 1-100 representing compatibility of the domain with the legal text]
+**RATIONALE**: [Brief explanation of why this technique is optimal for this legal text]`;
+        }
+
+        // ===== NOVELTY ANALYSIS MODULE =====
+        function noveltyAnalysisPrompt(interpretation, originalText) {
+            return `ROLE: legal_novelty_detective
+TASK: Conduct a thorough web search to determine if the provided legal interpretation is genuinely novel or if similar analyses already exist in academic literature, court decisions, or legal commentaries.
+
+INTERPRETATION TO CHECK:
+"""
+${interpretation}
+"""
+
+ORIGINAL LEGAL TEXT:
+"""
+${originalText}
+"""
+
+SEARCH STRATEGY:
+1. Formulate precise search queries combining key terms from the interpretation and the original legal text
+2. Search for academic papers, legal databases, and court filings that use similar interpretive methods
+3. Look for discussions in legal blogs, commentaries, and international law forums
+4. Specifically search for applications of analogous reasoning from other domains
+
+ANALYSIS AND OUTPUT:
+Based on your search, provide a structured report following this format:
+
+**NOVELTY STATUS**: [Novel / Partially Novel / Existing]
+**CLOSEST EXISTING WORK**: [Citation and brief summary of closest matching work found, or "None found"]
+**ORIGINALITY SCORE**: [Score from 1-100, where 100 is completely novel and unprecedented]
+**GAP IDENTIFIED**: [Specific gap in existing legal scholarship that this interpretation fills]
+**RESEARCH VALUE**: [High / Medium / Low - assess potential academic contribution]
+**SIMILAR APPROACHES**: [List any similar interpretive approaches found in the literature]`;
+        }
+
+        // ===== EXPORT SYSTEM =====
+        const ExportSystem = {
+            generateMarkdownReport(data) {
+                const noveltySection = data.enhancement_results?.noveltyAnalysis ? `
+### Novelty Gap Analysis
+**Status:** ${data.enhancement_results.noveltyAnalysis.noveltyStatus || 'N/A'}
+**Score:** ${data.enhancement_results.noveltyAnalysis.noveltyScore || 'N/A'}/100
+**Gap Identified:** ${data.enhancement_results.noveltyAnalysis.gapIdentified || 'N/A'}
+**Research Value:** ${data.enhancement_results.noveltyAnalysis.researchValue || 'N/A'}
+` : 'Novelty analysis was not performed.';
+
+                const sstGenerationSection = data.enhancement_results?.sstGeneration ? `
+### Dynamic SST Generation
+**Generated Technique:** ${data.enhancement_results.sstGeneration.technique || 'N/A'}
+**Method:** ${data.enhancement_results.sstGeneration.method || 'N/A'}
+**Confidence:** ${data.enhancement_results.sstGeneration.confidence || 'N/A'}/100
+` : 'Dynamic SST generation was not used.';
+
+                return `# DRBanger Enhanced Legal Analysis Report
+
+**Generated:** ${data.metadata?.timestamp || new Date().toISOString()}
+**Analysis Type:** Enhanced Workflow
+
+## Input Configuration
+**Legal Text:**
+\`\`\`
+${data.metadata?.legalText || 'N/A'}
+\`\`\`
+
+**SST Technique:**
+\`\`\`
+${data.metadata?.sstTechnique || 'N/A'}
+\`\`\`
+
+**Bots Used:**
+- Bot 1: ${data.metadata?.bots?.bot1 || 'N/A'}
+- Bot 2: ${data.metadata?.bots?.bot2 || 'N/A'}
+- Bot 3: ${data.metadata?.bots?.bot3 || 'N/A'}
+- Bot 4: ${data.metadata?.bots?.bot4 || 'N/A'}
+
+## Enhancement Modules
+${sstGenerationSection}
+${noveltySection}
+
+## Core Analysis Chain
+
+### 1. SST Mechanical Application (Bot 1)
+${data.core_analysis?.bot1Output || 'No output recorded.'}
+
+### 2. Hostile Legal Critic (Bot 2)
+${data.core_analysis?.bot2Output || 'No output recorded.'}
+
+### 3. International Law Validator (Bot 3)
+${data.core_analysis?.bot3Output || 'No output recorded.'}
+
+### 4. Concrete ICC Insight Extractor (Bot 4)
+${data.core_analysis?.bot4Output || 'No output recorded.'}
+
+## Final Assessment
+**Key Finding Status:** ${data.final_insights?.keyFindingStatus || 'Unknown'}
+**Novelty Score:** ${data.final_insights?.noveltyScore || 'N/A'}/100
+**Breakthrough Status:** ${data.final_insights?.breakthroughStatus ? '🚀 ACHIEVED' : '⏳ In Progress'}
+
+---
+*Generated by DRBanger Enhanced Legal Research System*`;
+            },
+
+            generateCSVSummary(data) {
+                const escapeCSV = (str) => {
+                    if (typeof str !== 'string') return '';
+                    let result = str.replace(/"/g, '""');
+                    if (result.includes(',') || result.includes('"') || result.includes('\n')) {
+                        result = `"${result}"`;
+                    }
+                    return result;
+                };
+
+                const headers = 'Timestamp,Legal Text,SST Technique,Bot1,Bot2,Bot3,Bot4,Novelty Score,Breakthrough Status,Key Finding Status';
+                const row = [
+                    escapeCSV(data.metadata?.timestamp || ''),
+                    escapeCSV(data.metadata?.legalText || ''),
+                    escapeCSV(data.metadata?.sstTechnique || ''),
+                    escapeCSV(data.metadata?.bots?.bot1 || ''),
+                    escapeCSV(data.metadata?.bots?.bot2 || ''),
+                    escapeCSV(data.metadata?.bots?.bot3 || ''),
+                    escapeCSV(data.metadata?.bots?.bot4 || ''),
+                    escapeCSV(data.final_insights?.noveltyScore?.toString() || ''),
+                    escapeCSV(data.final_insights?.breakthroughStatus ? 'ACHIEVED' : 'In Progress'),
+                    escapeCSV(data.final_insights?.keyFindingStatus || '')
+                ].join(',');
+
+                return `${headers}\n${row}`;
+            },
+
+            downloadFile(content, filename, mimeType) {
+                const blob = new Blob([content], { type: mimeType });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            },
+
+            exportData(format) {
+                const data = this.collectResults();
+                let content, filename, mimeType;
+
+                switch (format) {
+                    case 'markdown':
+                        content = this.generateMarkdownReport(data);
+                        filename = `DRBanger_Report_${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.md`;
+                        mimeType = 'text/markdown';
+                        break;
+                    case 'json':
+                        content = JSON.stringify(data, null, 2);
+                        filename = `DRBanger_Export_${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.json`;
+                        mimeType = 'application/json';
+                        break;
+                    case 'csv':
+                        content = this.generateCSVSummary(data);
+                        filename = `DRBanger_Summary_${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.csv`;
+                        mimeType = 'text/csv';
+                        break;
+                    default:
+                        return;
+                }
+
+                this.downloadFile(content, filename, mimeType);
+            },
+
+            collectResults() {
+                const state = window.DRBangerState || {};
+                return {
+                    metadata: state.metadata || {},
+                    core_analysis: state.core_analysis || {},
+                    enhancement_results: state.enhancement_results || {},
+                    final_insights: state.final_insights || {}
+                };
+            }
+        };
+
+        // ===== POE HANDLERS =====
+        
+        // SST Generation Handler
+        window.Poe.registerHandler("sst-generator-handler", (result) => {
+            const statusDiv = document.getElementById('sstGenStatus');
+            const outputDiv = document.getElementById('sstGenOutput');
+            const sstCapsule = document.getElementById('sstCapsule');
+
+            if (result.status === "complete" && result.responses && result.responses.length > 0) {
+                const content = result.responses[0].content;
+                
+                // Parse the generated SST
+                const techniqueMatch = content.match(/\*\*SST TECHNIQUE\*\*:\s*(.*)/);
+                const methodMatch = content.match(/\*\*APPLICATION METHOD\*\*:\s*(.*)/);
+                const scoreMatch = content.match(/\*\*CONFIDENCE SCORE\*\*:\s*(\d+)/);
+                const rationaleMatch = content.match(/\*\*RATIONALE\*\*:\s*(.*)/);
+
+                if (techniqueMatch && methodMatch) {
+                    const technique = techniqueMatch[1].trim();
+                    const method = methodMatch[1].trim();
+                    const score = scoreMatch ? scoreMatch[1].trim() : 'N/A';
+                    const rationale = rationaleMatch ? rationaleMatch[1].trim() : '';
+
+                    const formattedSST = `**SST TECHNIQUE**: ${technique}\n**APPLICATION METHOD**: ${method}`;
+                    sstCapsule.value = formattedSST;
+                    
+                    outputDiv.innerHTML = marked.parse(`**Generated Technique:** ${technique}\n\n**Method:** ${method}\n\n**Confidence:** ${score}/100\n\n**Rationale:** ${rationale}`);
+                    statusDiv.textContent = '✅ SST generated successfully';
+                    statusDiv.className = 'text-sm text-green-600 dark:text-green-400 mb-2';
+
+                    // Store in state
+                    if (window.DRBangerState.enhancement_results) {
+                        window.DRBangerState.enhancement_results.sstGeneration = {
+                            technique,
+                            method,
+                            confidence: score,
+                            rationale
+                        };
+                    }
+
+                    updateStepStatus('step1Status', 'complete');
+                    document.dispatchEvent(new Event('sstGenerationComplete'));
+                } else {
+                    statusDiv.textContent = '❌ Could not parse generated SST';
+                    statusDiv.className = 'text-sm text-red-600 dark:text-red-400 mb-2';
+                    outputDiv.innerHTML = '<div class="text-red-600">Parsing failed. Raw output:</div><div class="mt-2 text-gray-600">' + marked.parse(content) + '</div>';
+                    document.dispatchEvent(new Event('sstGenerationFailed'));
+                }
+            } else if (result.responses && result.responses.length > 0 && result.responses[0].status === "incomplete") {
+                statusDiv.textContent = '⏳ Generating SST technique...';
+                outputDiv.innerHTML = marked.parse(result.responses[0].content || "Generating...");
+            } else {
+                statusDiv.textContent = '❌ Failed to generate SST';
+                statusDiv.className = 'text-sm text-red-600 dark:text-red-400 mb-2';
+                outputDiv.innerHTML = '<div class="text-red-600">No response received</div>';
+                document.dispatchEvent(new Event('sstGenerationFailed'));
+            }
+        });
+
+        // Bot Handlers
+        window.Poe.registerHandler("bot1-handler", (result) => {
+            handleBotResponse(result, 'bot1', () => {
+                if (window.DRBangerState.core_analysis) {
+                    window.DRBangerState.core_analysis.bot1Output = result.responses[0].content;
+                }
+                updateStepStatus('step2Status', 'complete');
+                setTimeout(() => startBot2().catch(handleBotError), 500);
+            });
+        });
+
+        window.Poe.registerHandler("bot2-handler", (result) => {
+            handleBotResponse(result, 'bot2', () => {
+                if (window.DRBangerState.core_analysis) {
+                    window.DRBangerState.core_analysis.bot2Output = result.responses[0].content;
+                }
+                updateStepStatus('step3Status', 'complete');
+                setTimeout(() => startBot3().catch(handleBotError), 500);
+            });
+        });
+
+        window.Poe.registerHandler("bot3-handler", (result) => {
+            handleBotResponse(result, 'bot3', () => {
+                if (window.DRBangerState.core_analysis) {
+                    window.DRBangerState.core_analysis.bot3Output = result.responses[0].content;
+                }
+                updateStepStatus('step4Status', 'complete');
+                setTimeout(() => startBot4().catch(handleBotError), 500);
+            });
+        });
+
+        window.Poe.registerHandler("bot4-handler", (result) => {
+            handleBotResponse(result, 'bot4', () => {
+                if (window.DRBangerState.core_analysis) {
+                    window.DRBangerState.core_analysis.bot4Output = result.responses[0].content;
+                }
+                updateStepStatus('step5Status', 'complete');
+                
+                // Check if novelty analysis is enabled
+                const enableNovelty = document.getElementById('enableNoveltyAnalysis').checked;
+                if (enableNovelty) {
+                    setTimeout(() => startNoveltyAnalysis().catch(handleBotError), 500);
+                } else {
+                    finalizeAnalysis();
+                }
+            });
+        });
+
+        // Novelty Analysis Handler
+        window.Poe.registerHandler("novelty-handler", (result) => {
+            const statusDiv = document.getElementById('noveltyStatus');
+            const container = document.getElementById('noveltyAnalysisResults');
+            
+            container.classList.remove('hidden');
+
+            if (result.status === "complete" && result.responses && result.responses.length > 0) {
+                const content = result.responses[0].content;
+                
+                // Parse novelty analysis results
+                const statusMatch = content.match(/\*\*NOVELTY STATUS\*\*:\s*(.*)/);
+                const scoreMatch = content.match(/\*\*ORIGINALITY SCORE\*\*:\s*(\d+)/);
+                const valueMatch = content.match(/\*\*RESEARCH VALUE\*\*:\s*(.*)/);
+                const gapMatch = content.match(/\*\*GAP IDENTIFIED\*\*:\s*(.*)/);
+
+                const noveltyStatus = statusMatch ? statusMatch[1].trim() : 'Unknown';
+                const noveltyScore = scoreMatch ? scoreMatch[1].trim() : '0';
+                const researchValue = valueMatch ? valueMatch[1].trim() : 'Unknown';
+                const gapIdentified = gapMatch ? gapMatch[1].trim() : 'Could not be determined';
+
+                document.getElementById('noveltyScore').textContent = noveltyScore;
+                document.getElementById('noveltyStatusValue').textContent = noveltyStatus;
+                document.getElementById('researchValue').textContent = researchValue;
+                document.getElementById('identifiedGap').textContent = gapIdentified;
+
+                statusDiv.textContent = '✅ Novelty analysis complete';
+                statusDiv.className = 'text-sm text-green-600 dark:text-green-400 mb-2';
+
+                // Store results
+                if (window.DRBangerState.enhancement_results) {
+                    window.DRBangerState.enhancement_results.noveltyAnalysis = {
+                        noveltyStatus,
+                        noveltyScore,
+                        researchValue,
+                        gapIdentified,
+                        rawOutput: content
+                    };
+                }
+
+                updateStepStatus('step6Status', 'complete');
+                finalizeAnalysis();
+            } else if (result.responses && result.responses.length > 0 && result.responses[0].status === "incomplete") {
+                statusDiv.textContent = '⏳ Analyzing novelty...';
+            } else {
+                statusDiv.textContent = '❌ Novelty analysis failed';
+                statusDiv.className = 'text-sm text-red-600 dark:text-red-400 mb-2';
+                document.getElementById('identifiedGap').textContent = 'Analysis failed';
+                updateStepStatus('step6Status', 'error');
+                finalizeAnalysis();
+            }
+        });
+
+        // ===== UTILITY FUNCTIONS =====
+        
+        function initializeState() {
+            const legalText = document.getElementById('legalText').value.trim();
+            const sstTechnique = document.getElementById('sstCapsule').value.trim();
+
+            window.DRBangerState = {
+                metadata: {
+                    timestamp: new Date().toISOString(),
+                    legalText,
+                    sstTechnique,
+                    bots: {
+                        bot1: document.getElementById('bot1').value,
+                        bot2: document.getElementById('bot2').value,
+                        bot3: document.getElementById('bot3').value,
+                        bot4: document.getElementById('bot4').value
+                    },
+                    enhancementsEnabled: {
+                        sstGeneration: document.getElementById('enableSSTGeneration').checked,
+                        noveltyAnalysis: document.getElementById('enableNoveltyAnalysis').checked,
+                        exportSystem: document.getElementById('enableExportSystem').checked
+                    }
+                },
+                core_analysis: {
+                    bot1Output: null,
+                    bot2Output: null,
+                    bot3Output: null,
+                    bot4Output: null
+                },
+                enhancement_results: {
+                    sstGeneration: null,
+                    noveltyAnalysis: null
+                },
+                final_insights: {}
+            };
+        }
+
+        function updateStepStatus(stepId, status) {
+            const element = document.getElementById(stepId);
+            if (!element) return;
+
+            element.classList.remove('bg-gray-200', 'dark:bg-gray-700', 'bg-blue-500', 'bg-green-500', 'bg-red-500');
+            element.classList.remove('text-gray-700', 'dark:text-gray-300', 'text-white');
+
+            switch (status) {
+                case 'active':
+                    element.classList.add('bg-blue-500', 'text-white');
+                    break;
+                case 'complete':
+                    element.classList.add('bg-green-500', 'text-white');
+                    break;
+                case 'error':
+                    element.classList.add('bg-red-500', 'text-white');
+                    break;
+                default:
+                    element.classList.add('bg-gray-200', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-300');
+            }
+        }
+
+        function resetStepStatuses() {
+            ['step1Status', 'step2Status', 'step3Status', 'step4Status', 'step5Status', 'step6Status'].forEach(id => {
+                updateStepStatus(id, 'pending');
+            });
+        }
+
+        function handleBotResponse(result, botNum, onComplete) {
+            const status = document.getElementById(`${botNum}Status`);
+            const output = document.getElementById(`${botNum}Output`);
+            
+            if (result.responses && result.responses.length > 0) {
+                const response = result.responses[0];
+                
+                if (response.status === "error") {
+                    status.textContent = "❌ Error occurred";
+                    status.className = 'text-sm text-red-600 dark:text-red-400 mb-2';
+                    output.innerHTML = `<div class="text-red-600">Error: ${response.statusText || 'Unknown error'}</div>`;
+                    resetRunButton();
+                } else if (response.status === "incomplete") {
+                    status.textContent = "⏳ Generating response...";
+                    status.className = 'text-sm text-blue-600 dark:text-blue-400 mb-2';
+                    output.innerHTML = marked.parse(response.content || "Loading...");
+                } else if (response.status === "complete") {
+                    status.textContent = "✅ Complete";
+                    status.className = 'text-sm text-green-600 dark:text-green-400 mb-2';
+                    output.innerHTML = marked.parse(response.content);
+                    if (onComplete && typeof onComplete === 'function') {
+                        onComplete();
+                    }
+                }
+            } else {
+                showError(`${botNum}: No response received`);
+                resetRunButton();
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('errorSection').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('errorSection').classList.add('hidden');
+            }, 10000);
+        }
+
+        function resetRunButton() {
+            document.getElementById('runAnalysis').disabled = false;
+            document.getElementById('runAnalysis').textContent = "🚀 Run Enhanced DRBanger Analysis";
+        }
+
+        function handleBotError(error) {
+            console.error('Bot error:', error);
+            showError(`Error: ${error.message}`);
+            resetRunButton();
+        }
+
+        function resetOutputs() {
+            // Reset state
+            window.DRBangerState = {};
+            resetStepStatuses();
+            
+            // Clear bot outputs
+            ['bot1Output', 'bot2Output', 'bot3Output', 'bot4Output'].forEach(id => {
+                document.getElementById(id).innerHTML = '';
+            });
+            
+            // Clear status displays
+            ['bot1Status', 'bot2Status', 'bot3Status', 'bot4Status', 'sstGenStatus', 'noveltyStatus'].forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = '';
+                    element.className = 'text-sm text-gray-600 dark:text-gray-400 mb-2';
+                }
+            });
+            
+            // Hide sections
+            ['sstGenerationResults', 'noveltyAnalysisResults', 'exportSection'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            
+            // Clear enhancement outputs
+            document.getElementById('sstGenOutput').innerHTML = '';
+            document.getElementById('generatedSSTOutput').classList.add('hidden');
+            document.getElementById('errorSection').classList.add('hidden');
+        }
+
+        function finalizeAnalysis() {
+            const state = window.DRBangerState;
+            
+            // Extract key insights
+            const noveltyScore = state.enhancement_results?.noveltyAnalysis?.noveltyScore || '0';
+            const isBreakthrough = (parseInt(noveltyScore, 10) || 0) > 85;
+            const keyFindingMatch = state.core_analysis?.bot4Output?.match(/\*\*ICC FINDING\*\*:\s*(.*)/);
+            const keyFindingStatus = keyFindingMatch ? 'Extracted' : 'Not Extracted';
+
+            // Update final insights
+            state.final_insights = {
+                noveltyScore,
+                breakthroughStatus: isBreakthrough,
+                keyFindingStatus
+            };
+
+            // Update export section
+            if (document.getElementById('enableExportSystem').checked) {
+                document.getElementById('finalNoveltyScore').textContent = noveltyScore;
+                document.getElementById('breakthroughStatus').textContent = isBreakthrough ? '🚀 ACHIEVED' : '⏳ In Progress';
+                document.getElementById('keyFindingStatus').textContent = keyFindingStatus;
+                document.getElementById('exportSection').classList.remove('hidden');
+            }
+
+            resetRunButton();
+        }
+
+        // ===== BOT EXECUTION FUNCTIONS =====
+        
+        async function generateSST() {
+            const legalText = document.getElementById('legalText').value.trim();
+            if (!legalText) {
+                showError("Please enter legal text before generating SST");
+                return;
+            }
+
+            const prompt = generateSSTPrompt(legalText);
+            document.getElementById('sstGenerationResults').classList.remove('hidden');
+            updateStepStatus('step1Status', 'active');
+
+            try {
+                await window.Poe.sendUserMessage(`@Gemini-2.5-Flash ${prompt}`, {
+                    handler: "sst-generator-handler",
+                    stream: true,
+                    openChat: false
+                });
+            } catch (error) {
+                handleBotError(error);
+                updateStepStatus('step1Status', 'error');
+            }
+        }
+
+        async function startBot1() {
+            const legalText = document.getElementById('legalText').value.trim();
+            const sstTechnique = document.getElementById('sstCapsule').value.trim();
+            const bot1Name = document.getElementById('bot1').value;
+            const prePrompt1 = document.getElementById('prePrompt1').value.trim();
+
+            if (!legalText || !sstTechnique) {
+                showError("Please enter both legal text and SST technique");
+                resetRunButton();
+                return;
+            }
+
+            const prompt = botPrompts.bot1(legalText, sstTechnique, prePrompt1);
+            updateStepStatus('step2Status', 'active');
+
+            try {
+                document.getElementById('bot1Status').textContent = "🚀 Starting SST application...";
+                await window.Poe.sendUserMessage(`@${bot1Name} ${prompt}`, {
+                    handler: "bot1-handler",
+                    stream: true,
+                    openChat: false
+                });
+            } catch (error) {
+                handleBotError(error);
+                updateStepStatus('step2Status', 'error');
+            }
+        }
+
+        async function startBot2() {
+            const legalText = document.getElementById('legalText').value.trim();
+            const bot2Name = document.getElementById('bot2').value;
+            const prePrompt2 = document.getElementById('prePrompt2').value.trim();
+
+            const prompt = botPrompts.bot2(window.DRBangerState.core_analysis.bot1Output, legalText, prePrompt2);
+            updateStepStatus('step3Status', 'active');
+
+            try {
+                document.getElementById('bot2Status').textContent = "🚀 Starting ICC precedent evaluation...";
+                await window.Poe.sendUserMessage(`@${bot2Name} ${prompt}`, {
+                    handler: "bot2-handler",
+                    stream: true,
+                    openChat: false
+                });
+            } catch (error) {
+                handleBotError(error);
+                updateStepStatus('step3Status', 'error');
+            }
+        }
+
+        async function startBot3() {
+            const bot3Name = document.getElementById('bot3').value;
+            const prePrompt3 = document.getElementById('prePrompt3').value.trim();
+
+            const prompt = botPrompts.bot3(
+                window.DRBangerState.core_analysis.bot2Output, 
+                window.DRBangerState.core_analysis.bot1Output, 
+                prePrompt3
+            );
+            updateStepStatus('step4Status', 'active');
+
+            try {
+                document.getElementById('bot3Status').textContent = "🚀 Starting SST application to international law...";
+                await window.Poe.sendUserMessage(`@${bot3Name} ${prompt}`, {
+                    handler: "bot3-handler",
+                    stream: true,
+                    openChat: false
+                });
+            } catch (error) {
+                handleBotError(error);
+                updateStepStatus('step4Status', 'error');
+            }
+        }
+
+        async function startBot4() {
+            if (!window.DRBangerState.core_analysis.bot2Output || !window.DRBangerState.core_analysis.bot3Output) {
+                showError("Bot 4 cannot start - missing required outputs");
+                resetRunButton();
+                return;
+            }
+
+            const legalText = document.getElementById('legalText').value.trim();
+            const sstTechnique = document.getElementById('sstCapsule').value.trim();
+            const bot4Name = document.getElementById('bot4').value;
+            const prePrompt4 = document.getElementById('prePrompt4').value.trim();
+
+            const prompt = botPrompts.bot4(
+                window.DRBangerState.core_analysis.bot2Output,
+                window.DRBangerState.core_analysis.bot3Output,
+                legalText,
+                sstTechnique,
+                prePrompt4
+            );
+            updateStepStatus('step5Status', 'active');
+
+            try {
+                document.getElementById('bot4Status').textContent = "🚀 Extracting ICC insights...";
+                await window.Poe.sendUserMessage(`@${bot4Name} ${prompt}`, {
+                    handler: "bot4-handler",
+                    stream: true,
+                    openChat: false
+                });
+            } catch (error) {
+                handleBotError(error);
+                updateStepStatus('step5Status', 'error');
+            }
+        }
+
+        async function startNoveltyAnalysis() {
+            const bot4Output = window.DRBangerState.core_analysis.bot4Output;
+            const legalText = document.getElementById('legalText').value.trim();
+
+            if (!bot4Output) {
+                showError("Novelty analysis requires Bot 4 output");
+                return;
+            }
+
+            const prompt = noveltyAnalysisPrompt(bot4Output, legalText);
+            updateStepStatus('step6Status', 'active');
+
+            try {
+                document.getElementById('noveltyStatus').textContent = "🚀 Starting novelty analysis...";
+                await window.Poe.sendUserMessage(`@Gemini-2.5-Flash-Search ${prompt}`, {
+                    handler: "novelty-handler",
+                    stream: true,
+                    openChat: false
+                });
+            } catch (error) {
+                handleBotError(error);
+                updateStepStatus('step6Status', 'error');
+            }
+        }
+
+        // ===== EVENT LISTENERS =====
+        
+        // Enhancement module toggles
+        document.getElementById('enableSSTGeneration').addEventListener('change', function() {
+            const module = document.getElementById('sstGenerationModule');
+            if (this.checked) {
+                module.classList.remove('hidden');
+            } else {
+                module.classList.add('hidden');
+            }
+        });
+
+        // SST Generation button
+        document.getElementById('generateSSTBtn').addEventListener('click', async () => {
+            document.getElementById('generateSSTBtn').disabled = true;
+            document.getElementById('generateSSTBtn').textContent = "⏳ Generating...";
+            
+            // Listen for completion
+            document.addEventListener('sstGenerationComplete', () => {
+                document.getElementById('generateSSTBtn').disabled = false;
+                document.getElementById('generateSSTBtn').textContent = "🔮 Generate Optimal SST";
+            }, { once: true });
+            
+            document.addEventListener('sstGenerationFailed', () => {
+                document.getElementById('generateSSTBtn').disabled = false;
+                document.getElementById('generateSSTBtn').textContent = "🔮 Generate Optimal SST";
+            }, { once: true });
+
+            await generateSST();
+        });
+
+        // Sample random SST button
+        document.getElementById('sampleSSTBtn').addEventListener('click', () => {
+            const randomSST = getRandomSST();
+            if (randomSST) {
+                document.getElementById('sstCapsule').value = randomSST;
+            } else {
+                showError("No SST database loaded");
+            }
+        });
+
+        // Main analysis button
+        document.getElementById('runAnalysis').addEventListener('click', async () => {
+            resetOutputs();
+            document.getElementById('resultsSection').classList.remove('hidden');
+            document.getElementById('runAnalysis').disabled = true;
+            document.getElementById('runAnalysis').textContent = "⏳ Initializing Enhanced Analysis...";
+
+            initializeState();
+
+            // Check if SST generation is enabled
+            const enableSSTGeneration = document.getElementById('enableSSTGeneration').checked;
+            const sstCapsule = document.getElementById('sstCapsule').value.trim();
+
+            if (enableSSTGeneration && !sstCapsule) {
+                // Generate SST first, then start main chain
+                document.addEventListener('sstGenerationComplete', () => {
+                    setTimeout(() => startBot1().catch(handleBotError), 500);
+                }, { once: true });
+                
+                document.addEventListener('sstGenerationFailed', () => {
+                    resetRunButton();
+                }, { once: true });
+
+                await generateSST();
+            } else {
+                // Start main chain directly
+                setTimeout(() => startBot1().catch(handleBotError), 100);
+            }
+        });
+
+        // Export buttons
+        document.getElementById('exportMarkdown').addEventListener('click', () => {
+            ExportSystem.exportData('markdown');
+        });
+
+        document.getElementById('exportJSON').addEventListener('click', () => {
+            ExportSystem.exportData('json');
+        });
+
+        document.getElementById('exportCSV').addEventListener('click', () => {
+            ExportSystem.exportData('csv');
+        });
+
+        // ===== SST DATABASE MODAL SYSTEM =====
+        function createSSTDatabaseModal() {
+            const modalHTML = `
+                <div id="sstDatabaseModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl w-11/12 md:w-2/3 lg:w-1/2 max-h-[90vh] flex flex-col">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-semibold">SST Technique Database</h3>
+                            <button id="closeSSTDatabase" class="text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 text-2xl">&times;</button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                            <input type="text" id="sstSearchInput" placeholder="Search techniques..." 
+                                class="md:col-span-2 w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-base">
+                            <select id="sstDomainFilter" class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-base">
+                                <option value="all">All Domains</option>
+                            </select>
+                        </div>
+                        <div id="sstResultsList" class="flex-grow overflow-y-auto space-y-2 pr-2">
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+        }
+
+        function populateDomainFilter() {
+            const domainFilter = document.getElementById('sstDomainFilter');
+            const domains = sstDatabase.map(d => d.domain).sort();
+            
+            // Clear existing options except "All Domains"
+            domainFilter.innerHTML = '<option value="all">All Domains</option>';
+            
+            domains.forEach(domain => {
+                const option = document.createElement('option');
+                option.value = domain;
+                option.textContent = domain;
+                domainFilter.appendChild(option);
+            });
+        }
+
+        function renderSSTList() {
+            const searchTerm = document.getElementById('sstSearchInput').value.toLowerCase();
+            const selectedDomain = document.getElementById('sstDomainFilter').value;
+            const resultsList = document.getElementById('sstResultsList');
+            let html = '';
+
+            sstDatabase.forEach(domainData => {
+                if (selectedDomain === 'all' || selectedDomain === domainData.domain) {
+                    const filteredTechniques = domainData.techniques.filter(tech =>
+                        tech.name.toLowerCase().includes(searchTerm) ||
+                        tech.method.toLowerCase().includes(searchTerm)
+                    );
+
+                    if (filteredTechniques.length > 0) {
+                        html += `<div class="p-2 rounded bg-gray-50 dark:bg-gray-900/50">
+                            <h4 class="font-semibold text-sm text-purple-600 dark:text-purple-400">${domainData.domain}</h4>
+                        </div>`;
+
+                        filteredTechniques.forEach(tech => {
+                            html += `
+                                <div class="p-3 border dark:border-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer sst-item"
+                                     data-name="${escapeAttr(tech.name)}" data-method="${escapeAttr(tech.method)}">
+                                    <p class="font-bold">${tech.name}</p>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">${tech.method}</p>
+                                </div>
+                            `;
+                        });
+                    }
+                }
+            });
+
+            resultsList.innerHTML = html || '<p class="text-center text-gray-500">No techniques found.</p>';
+            attachItemClickListeners();
+        }
+
+        function attachItemClickListeners() {
+            document.querySelectorAll('.sst-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const name = item.dataset.name;
+                    const method = item.dataset.method;
+                    selectSST(name, method);
+                });
+            });
+        }
+
+        function selectSST(name, method) {
+            const formattedSST = `**SST TECHNIQUE**: ${name}\n**APPLICATION METHOD**: ${method}`;
+            document.getElementById('sstCapsule').value = formattedSST;
+            document.getElementById('sstDatabaseModal').classList.add('hidden');
+            // Trigger an input event for any other listeners
+            document.getElementById('sstCapsule').dispatchEvent(new Event('input', { bubbles: true }));
+        }
+
+        function escapeAttr(str) {
+            return str.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
+        // ===== CASCADING DROPDOWN SYSTEM =====
+        function initializeCascadingDropdowns() {
+            const domainSelect = document.getElementById('sstDomainSelect');
+            const techniqueSelect = document.getElementById('sstTechniqueSelect');
+            const applyBtn = document.getElementById('applySSTBtn');
+
+            // Populate domain dropdown
+            domainSelect.innerHTML = '<option value="">Select a domain...</option>';
+            sstDatabase.forEach(domain => {
+                const option = document.createElement('option');
+                option.value = domain.domain;
+                option.textContent = domain.domain;
+                domainSelect.appendChild(option);
+            });
+
+            // Domain selection handler
+            domainSelect.addEventListener('change', function() {
+                const selectedDomain = this.value;
+                techniqueSelect.innerHTML = '<option value="">Select a technique...</option>';
+                techniqueSelect.disabled = !selectedDomain;
+                applyBtn.disabled = true;
+
+                if (selectedDomain) {
+                    const domainData = sstDatabase.find(d => d.domain === selectedDomain);
+                    if (domainData) {
+                        domainData.techniques.forEach(tech => {
+                            const option = document.createElement('option');
+                            option.value = JSON.stringify({ name: tech.name, method: tech.method });
+                            option.textContent = tech.name;
+                            techniqueSelect.appendChild(option);
+                        });
+                        techniqueSelect.disabled = false;
+                    }
+                }
+            });
+
+            // Technique selection handler
+            techniqueSelect.addEventListener('change', function() {
+                applyBtn.disabled = !this.value;
+            });
+
+            // Apply button handler
+            applyBtn.addEventListener('click', function() {
+                const selectedTechnique = techniqueSelect.value;
+                if (selectedTechnique) {
+                    try {
+                        const { name, method } = JSON.parse(selectedTechnique);
+                        selectSST(name, method);
+                        
+                        // Reset dropdowns
+                        domainSelect.value = '';
+                        techniqueSelect.innerHTML = '<option value="">Select a technique...</option>';
+                        techniqueSelect.disabled = true;
+                        applyBtn.disabled = true;
+                    } catch (error) {
+                        showError('Error applying selected SST');
+                    }
+                }
+            });
+        }
+
+        // ===== SST DATABASE MODAL HANDLERS =====
+        function initializeSSTDatabaseModal() {
+            createSSTDatabaseModal();
+            populateDomainFilter();
+
+            const openBtn = document.getElementById('openSSTDatabase');
+            const modal = document.getElementById('sstDatabaseModal');
+            const closeBtn = document.getElementById('closeSSTDatabase');
+            const searchInput = document.getElementById('sstSearchInput');
+            const domainFilter = document.getElementById('sstDomainFilter');
+
+            openBtn.addEventListener('click', () => {
+                modal.classList.remove('hidden');
+                renderSSTList();
+            });
+
+            closeBtn.addEventListener('click', () => {
+                modal.classList.add('hidden');
+            });
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.add('hidden');
+                }
+            });
+
+            searchInput.addEventListener('input', renderSSTList);
+            domainFilter.addEventListener('change', renderSSTList);
+        }
+
+        // ===== INITIALIZATION =====
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSSTDatabaseModal();
+            initializeCascadingDropdowns();
+            
+            // Initialize database status
+            document.getElementById('sstDatabaseStatus').textContent = `Loaded ${countTechniques(sstDatabase)} techniques from ${sstDatabase.length} domains (default)`;
+            document.getElementById('sstDatabaseStatus').className = 'text-sm text-green-600 dark:text-green-400';
+        });
+    </script>
+</body>
+</html>
+
