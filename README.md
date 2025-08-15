@@ -1,9 +1,9 @@
 **Prompt for GitHub Codex/ChatGPT:**```
-I need to integrate a large SST (Structural Systematic Transformation) technique database from a JSON file into my DRBanger Legal Research System code.
+I need to integrate a large SST (Structural Systematic Transformation) technique database from a JSON file into my DRBanger Legal Research System code (drbangerlegalprocessor.html)
 
 **TASK:** Replace the fallback SST database in my code with the complete database from `codex_sst.json`
 
-**FILE LOCATION:** `codex_sst.json` (in main repository directory)
+**FILE LOCATION:** techniques.json` (in main repository directory)
 
 **JSON STRUCTURE:** The file contains an array of domain objects, each with techniques:
 ```json
